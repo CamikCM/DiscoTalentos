@@ -1,0 +1,209 @@
+<html><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos - Discoteca Talentos</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap">
+    <style>
+        :root {
+            --primary: #ff00dd;
+            --secondary: #00e5ff;
+            --accent: #b52bff;
+            --dark: #0a0a0a;
+            --gradient: linear-gradient(135deg, var(--primary), var(--accent));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background: var(--dark);
+            color: white;
+        }
+
+        .events-header {
+            height: 50vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                       url('https://image-service.com/ai/concert-crowd-neon-lights.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .events-title {
+            font-size: 4em;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px var(--primary);
+            animation: glow 2s infinite;
+        }
+
+        .events-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .event-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            display: flex;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255,0,255,0.2);
+            border-color: var(--primary);
+        }
+
+        .event-image {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .event-details {
+            padding: 30px;
+            flex: 1;
+        }
+
+        .event-date {
+            background: var(--gradient);
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .event-name {
+            font-size: 2em;
+            margin-bottom: 15px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .event-description {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .event-price {
+            font-size: 1.5em;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .buy-tickets {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--gradient);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .buy-tickets:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255,0,255,0.4);
+        }
+
+        .back-to-main {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 30px;
+            background: var(--gradient);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 0 20px rgba(255,0,255,0.3);
+            transition: 0.3s;
+        }
+
+        .back-to-main:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px var(--primary); }
+            50% { text-shadow: 0 0 40px var(--secondary); }
+        }
+
+        @media (max-width: 768px) {
+            .event-card {
+                flex-direction: column;
+            }
+
+            .event-image {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="events-header">
+        <h1 class="events-title">Próximos Eventos</h1>
+    </header>
+
+<div class="events-container" id="events-container"></div>
+
+    <a href="index.html" class="back-to-main">Volver al Inicio</a>
+
+<script type="module">
+  import { db, collection, getDocs } from './js/firebase.js';
+
+  document.addEventListener("DOMContentLoaded", () => {
+    cargarEventos();
+function cargarEventos() {
+      const eventosRef = collection(db, "eventos");
+      getDocs(eventosRef)
+        .then((querySnapshot) => {
+          let eventosHTML = "";
+            querySnapshot.forEach((doc) => {
+            const evento = doc.data();
+            evento.id = doc.id; // Incluye el ID del documento en los datos del evento
+            const eventoHTML = `
+                <div class="event-card">
+                <img class="event-image" src="${evento.imagen}" alt="${evento.nombre}" width="300" height="300">
+                <div class="event-details">
+                    <div class="event-date">${evento.fecha}</div>
+                    <h2 class="event-name">${evento.nombre}</h2>
+                    <p class="event-description">${evento.descripcion}</p>
+                    <div class="event-price">Desde $${evento.precio}</div>
+                    <a href="/eventos.html?id=${evento.id}" class="buy-tickets">Comprar Entradas</a>
+
+                </div>
+                </div>
+            `;
+            eventosHTML += eventoHTML;
+            });
+
+          document.getElementById("events-container").innerHTML = eventosHTML;
+        })
+        .catch((error) => {
+          console.error("Error al leer los datos:", error);
+        });
+    }
+  });
+</script>
+</body>
+</html>

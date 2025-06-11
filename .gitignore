@@ -1,0 +1,5 @@
+creacionColecciones/*.json
+.vscode/
+node_modules/
+.env
+logs/

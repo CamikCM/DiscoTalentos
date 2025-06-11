@@ -1,0 +1,66 @@
+<html><head><base href="." />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería - Discoteca Talentos</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap">
+    <link rel="stylesheet" href="css/galeria.css">
+
+</head>
+<body>
+    <div class="gallery-header">
+        <h1 class="gallery-title">Galería de Momentos</h1>
+        <p>Revive los mejores momentos en Discoteca Talentos</p>
+    </div>
+
+    <div class="filter-container">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="eventos">Eventos</button>
+        <button class="filter-btn" data-filter="fiestas">Fiestas</button>
+        <button class="filter-btn" data-filter="ambiente">Ambiente</button>
+    </div>
+
+  <div class="gallery-grid"></div>
+    <div class="modal" id="image-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">×</button>
+            <img id="modal-image" src="" alt="Modal Image">
+        </div>
+    </div>
+
+    <a href="index.html" class="back-to-home">Volver al Inicio</a>
+    <script src="js/galeria.js"></script>
+   <script type="module">
+   import { db, collection, getDocs } from './js/firebase.js';
+
+  document.addEventListener("DOMContentLoaded", () => {
+    cargarGaleria("eventos");
+    cargarGaleria("fiestas");
+    cargarGaleria("ambiente");
+
+    function cargarGaleria(category) {
+      const galeriaRef = collection(db, "galeria", category, "items");
+      getDocs(galeriaRef)
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const galeriaItem = doc.data();
+            const galeriaItemHTML = `
+              <div class="gallery-item" data-category="${category}">
+                <img src="${galeriaItem.imageUrl}" alt="${galeriaItem.title}">
+                <div class="gallery-overlay">
+                  <h3>${galeriaItem.title}</h3>
+                  <p>${galeriaItem.description}</p>
+                </div>
+              </div>
+            `;
+            document.querySelector('.gallery-grid').innerHTML += galeriaItemHTML;
+          });
+        })
+        .catch((error) => {
+          console.error("Error al leer los datos:", error);
+        });
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+<html><head><base href="." />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprar Entradas - Discoteca Talentos</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap">
+    <link rel="stylesheet" href="css/compraEntrada.css">
+</head>
+<body>
+    <header class="checkout-header">
+        <h1 class="checkout-title">Comprar Entradas</h1>
+        <p>Complete sus datos para reservar su entrada</p>
+    </header>
+
+    <div class="checkout-container">
+        <div class="form-container">
+            <form id="checkout-form" onsubmit="return handleSubmit(event)">
+                <div class="form-group">
+                    <label class="form-label">Evento Seleccionado</label>
+                    <select class="form-input" id="event-select" required>
+                        <option value="">Seleccione un evento</option>
+                        <option value="bailarina-viral">Night Dance con @bailarina_viral - 15 Dic</option>
+                        <option value="los-electricos">Rock Night - Los Eléctricos - 22 Dic</option>
+                        <option value="nye-maxwell">Año Nuevo - DJ Maxwell - 31 Dic</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Cantidad de Entradas</label>
+                    <div class="ticket-selector">
+                        <div class="ticket-counter">
+                            <button type="button" class="counter-btn" onclick="updateTickets(-1)">-</button>
+                            <span class="ticket-count" id="ticket-count">1</span>
+                            <button type="button" class="counter-btn" onclick="updateTickets(1)">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nombre Completo</label>
+                    <input type="text" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Teléfono</label>
+                    <input type="tel" class="form-input" required>
+                </div>
+
+                <div class="order-summary">
+                    <h3 class="summary-title">Resumen de Compra</h3>
+                    <div class="summary-item">
+                        <span>Precio por entrada:</span>
+                        <span id="price-per-ticket">$40.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Cantidad:</span>
+                        <span id="summary-quantity">1</span>
+                    </div>
+                    <div class="summary-item total">
+                        <span>Total:</span>
+                        <span id="total-price">$40.00</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Confirmar Compra</button>
+            </form>
+        </div>
+    </div>
+
+    <a href="eventos.html" class="back-to-events">Volver a Eventos</a>
+    <script src="js/compraEntrada.js"></script>
+</body>
+</html>

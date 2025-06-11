@@ -1,0 +1,122 @@
+<html><head><base href="." />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú - Discoteca Talentos</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap">
+    <link rel="stylesheet" href="css/menu.css">
+</head>
+<body>
+    <header class="menu-header">
+        <h1 class="menu-title">Nuestro Menú</h1>
+    </header>
+
+    <nav class="menu-nav">
+        <ul>
+            <li><a href="#cocktails">Cocktails</a></li>
+            <li><a href="#bottles">Botellas</a></li>
+            <li><a href="#shots">Shots</a></li>
+            <li><a href="#beers">Cervezas</a></li>
+        </ul>
+    </nav>
+
+<section id="cocktails" class="menu-section">
+  <h2 class="category-title">Cocktails Premium</h2>
+  <div class="menu-grid"></div>
+</section>
+
+<section id="bottles" class="menu-section">
+  <h2 class="category-title">Botellas Premium</h2>
+  <div class="menu-grid"></div>
+</section>
+
+<section id="shots" class="menu-section">
+  <h2 class="category-title">Shots</h2>
+  <div class="menu-grid"></div>
+</section>
+
+<section id="beers" class="menu-section">
+  <h2 class="category-title">Cervezas</h2>
+  <div class="menu-grid"></div>
+</section>
+
+    <a href="index.html" class="back-to-main">Volver al Inicio</a>
+
+    <script>
+        function createFloatingIcons() {
+            const icons = ['🎵', '🎶', '🎸', '🎼', '🎹', '🎷', '🎺', '🪩', '🎊', '🎉'];
+            
+            setInterval(() => {
+                const icon = document.createElement('div');
+                icon.style.position = 'fixed';
+                icon.style.left = Math.random() * 100 + 'vw';
+                icon.style.top = '-30px';
+                icon.style.fontSize = (Math.random() * 10 + 15) + 'px';
+                icon.style.opacity = '0.8';
+                icon.style.animation = `float ${Math.random() * 2 + 3}s linear`;
+                icon.style.zIndex = '1';
+                icon.textContent = icons[Math.floor(Math.random() * icons.length)];
+                document.body.appendChild(icon);
+
+                setTimeout(() => icon.remove(), 5000);
+            }, 400);
+        }
+
+        createFloatingIcons();
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        document.addEventListener('scroll', () => {
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }
+            });
+        });
+    </script>
+    <script type="module">
+  import { db, collection, getDocs } from './js/firebase.js';
+
+  document.addEventListener("DOMContentLoaded", () => {
+    cargarMenu("cocktails");
+    cargarMenu("bottles");
+    cargarMenu("shots");
+    cargarMenu("beers");
+
+    function cargarMenu(category) {
+      const menuRef = collection(db, "menu", category, "items");
+      getDocs(menuRef)
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const menuItem = doc.data();
+            const menuItemHTML = `
+              <div class="menu-item">
+                <div class="menu-item-content">
+                  <h3>${menuItem.name}</h3>
+                  <p class="description">${menuItem.description}</p>
+                  <div class="price">$${menuItem.price}</div>
+                </div>
+                <img class="menu-item-image" src="${menuItem.imageUrl}" alt="${menuItem.name}">
+              </div>
+            `;
+            document.querySelector(`#${category} .menu-grid`).innerHTML += menuItemHTML;
+          });
+        })
+        .catch((error) => {
+          console.error("Error al leer los datos:", error);
+        });
+    }
+  });
+</script>
+
+
+</body></html>

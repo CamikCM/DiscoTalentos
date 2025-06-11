@@ -1,0 +1,274 @@
+        :root {
+            --primary: #ff00dd;
+            --secondary: #00e5ff;
+            --accent: #b52bff;
+            --dark: #0a0a0a;
+            --gradient: linear-gradient(135deg, var(--primary), var(--accent));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background: var(--dark);
+            color: white;
+        }
+
+        .menu-header {
+            height: 50vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                       url('https://image-service.com/ai/elegant-bar-neon-lighting.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            animation: headerGlow 8s infinite;
+        }
+
+        .menu-title {
+            font-size: 4em;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px var(--primary);
+            animation: titlePulse 3s infinite;
+            letter-spacing: 2px;
+        }
+
+        .menu-nav {
+            background: rgba(10,10,10,0.95);
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--primary);
+            animation: navGlow 4s infinite;
+        }
+
+        .menu-nav ul {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .menu-nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .menu-nav a:hover {
+            background: var(--gradient);
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(255,0,221,0.3);
+        }
+
+        .menu-nav a:hover::after {
+            width: 100%;
+        }
+
+        .menu-section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .menu-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            backdrop-filter: blur(5px);
+            animation: itemFloat 3s infinite;
+        }
+
+        .menu-item-image {
+            width: 200px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s;
+            order: 2;
+        }
+
+        .menu-item-content {
+            flex: 1;
+            order: 1;
+        }
+
+        .menu-item:hover .menu-item-image {
+            transform: scale(1.05);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255,0,255,0.2);
+            border-color: var(--primary);
+        }
+
+        .menu-item h3 {
+            color: white;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .menu-item .price {
+            font-size: 1.8em;
+            color: var(--primary);
+            font-weight: bold;
+            margin-top: 10px;
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        .menu-item .description {
+            color: rgba(255,255,255,0.8);
+            margin: 10px 0;
+        }
+
+        .category-title {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 40px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px var(--primary);
+        }
+
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        @keyframes headerGlow {
+            0%, 100% { 
+                background-blend-mode: soft-light;
+            }
+            50% { 
+                background-blend-mode: overlay;
+            }
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { 
+                transform: scale(1);
+                text-shadow: 0 0 20px var(--primary);
+            }
+            50% { 
+                transform: scale(1.05);
+                text-shadow: 0 0 40px var(--secondary);
+            }
+        }
+
+        @keyframes navGlow {
+            0%, 100% { 
+                border-bottom-color: var(--primary);
+            }
+            50% { 
+                border-bottom-color: var(--secondary);
+            }
+        }
+
+        @keyframes itemFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .back-to-main {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 30px;
+            background: var(--gradient);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 0 20px rgba(255,0,255,0.3);
+            transition: 0.3s;
+        }
+
+        .back-to-main:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 600px) {
+            .menu-item {
+                flex-direction: column-reverse;
+            }
+
+            .menu-item-image {
+                width: 100%;
+                height: 200px;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }

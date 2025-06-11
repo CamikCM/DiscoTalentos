@@ -1,0 +1,165 @@
+<html><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprar Entradas - Discoteca Talentos</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="css/evento.css">
+    <style>
+        .event-hero {
+            width: 100%;
+            height: 60vh;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 40px;
+                    }
+    </style>
+
+</head>
+<body>
+  <div class="event-hero">
+    <div class="event-info">
+      <h1 class="event-title"></h1>
+      <div class="event-details">
+        <p></p>
+        <p></p>
+        <p></p>
+      </div>
+    </div>
+  </div>
+  <div class="checkout-container">
+    <div class="email-section">
+      <div class="user-email" id="user-email"></div>
+      <div class="email-info"> Los boletos serán enviados a tu correo electrónico </div>
+    </div>
+    <div class="ticket-section">
+      <div class="ticket-selector">
+        <div class="ticket-counter">
+          <button type="button" class="counter-btn">-</button>
+          <span class="ticket-count" id="ticket-count">1</span>
+          <button type="button" class="counter-btn">+</button>
+        </div>
+      </div>
+      <div class="summary-item">
+        <span>Precio por entrada:</span>
+        <span id="price-per-ticket"></span>
+      </div>
+      <div class="summary-item">
+        <span>Cantidad:</span>
+        <span id="summary-quantity">1</span>
+      </div>
+      <div class="summary-item total">
+        <span>Total:</span>
+        <span id="total-price"></span>
+      </div>
+      <button class="submit-btn">Realizar Compra</button>
+    </div>
+  </div>
+  <div class="modal" id="qr-modal">
+    <div class="modal-content">
+      <button class="close-modal">×</button>
+      <h3>Escanea el código QR para realizar el pago</h3>
+      <div id="qrcode"></div>
+      <p>Una vez confirmado el pago, recibirás tus entradas por correo electrónico</p>
+    </div>
+  </div>
+  <a href="menuEventos.html" class="back-to-events">Volver a Eventos</a>
+<script type="module">
+  import { auth, db } from './js/firebase.js';
+
+  let ticketCount = 1;
+  let pricePerTicket = 0;
+
+const urlParams = new URLSearchParams(window.location.search);
+const eventoId = urlParams.get('id');
+
+
+  const eventTitleElement = document.querySelector(".event-title");
+  const eventDescriptionElement = document.querySelector(".event-details p:nth-child(1)");
+  const eventDateElement = document.querySelector(".event-details p:nth-child(2)");
+  const pricePerTicketElement = document.getElementById("price-per-ticket");
+  const ticketCountElement = document.getElementById('ticket-count');
+  const summaryQuantityElement = document.getElementById('summary-quantity');
+  const totalPriceElement = document.getElementById('total-price');
+  const userEmailElement = document.getElementById('user-email');
+
+  // Obtén los datos del evento desde Firestore
+
+import { doc, getDoc } from './js/firebase.js';
+
+
+const eventHeroElement = document.querySelector(".event-hero");
+
+const eventoRef = doc(db, "eventos", eventoId);
+getDoc(eventoRef).then((docSnap) => {
+  if (docSnap.exists()) {
+    const evento = docSnap.data();
+    // Utiliza la información del evento para llenar los campos correspondientes
+    eventTitleElement.textContent = evento.nombre;
+    eventDescriptionElement.textContent = evento.descripcion;
+    eventDateElement.textContent = evento.fecha;
+    pricePerTicket = evento.precio;
+    pricePerTicketElement.textContent = `$${pricePerTicket}`;
+    updateTotal();
+
+    // Agrega el estilo en línea para la imagen de fondo
+    eventHeroElement.style.backgroundImage = `linear-gradient(to bottom, transparent, var(--dark)), url('${evento.imagen}')`;
+  } else {
+    console.error("No se encontró el evento");
+  }
+}).catch((error) => {
+  console.error("Error al obtener el evento:", error);
+});
+
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      userEmailElement.textContent = user.email;
+    } else {
+      userEmailElement.textContent = "No logueado";
+    }
+  });
+
+  function updateTickets(change) {
+    const newCount = ticketCount + change;
+    if (newCount >= 1 && newCount <= 10) {
+      ticketCount = newCount;
+      ticketCountElement.textContent = ticketCount;
+      summaryQuantityElement.textContent = ticketCount;
+      updateTotal();
+    }
+  }
+
+  function updateTotal() {
+    const total = pricePerTicket * ticketCount;
+    totalPriceElement.textContent = `$${total.toFixed(2)}`;
+  }
+
+  function showQR() {
+    const modal = document.getElementById('qr-modal');
+    modal.classList.add('show');
+    // Clear previous QR code if exists
+    document.getElementById('qrcode').innerHTML = '';
+    // Generate QR code
+    const qrcode = new QRCode(document.getElementById("qrcode"), {
+      text: `PAYMENT_ID_${Date.now()}_AMOUNT_${pricePerTicket * ticketCount}`,
+      width: 200,
+      height: 200
+    });
+  }
+
+  function hideQR() {
+    const modal = document.getElementById('qr-modal');
+    modal.classList.remove('show');
+  }
+
+  // Asigna eventos a los botones
+  document.querySelector('.counter-btn:nth-child(1)').addEventListener('click', () => updateTickets(-1));
+  document.querySelector('.counter-btn:nth-child(3)').addEventListener('click', () => updateTickets(1));
+  document.querySelector('.submit-btn').addEventListener('click', showQR);
+  document.querySelector('.close-modal').addEventListener('click', hideQR);
+</script>
+</body>
+</html>
